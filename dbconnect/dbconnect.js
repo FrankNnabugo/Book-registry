@@ -17,7 +17,7 @@ try{
 
 };
 
-dbconnect();
+
    module.exports = {dbconnect}
 
    
