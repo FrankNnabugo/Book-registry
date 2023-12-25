@@ -1,8 +1,6 @@
 const express = require("express");
 
-const mongoose = require("mongoose");
-
-const route = require("./routes/book.route");
+const{router} = require("./routes/book.route");
 
 const {dbconnect} = require("./dbconnect/dbconnect");
 
@@ -23,7 +21,7 @@ next()
 
 //invoking route
 
-app.use("/book", route);    
+app.use("/book", router);    
 
 
 //listening to port
@@ -31,3 +29,5 @@ app.listen(process.env.PORT || 4000, ()=>{
 
     console.log("server is running on port", process.env.PORT);
 });
+
+dbconnect();
