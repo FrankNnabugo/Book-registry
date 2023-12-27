@@ -1,4 +1,3 @@
-const routes =require("../routes/book.route");
 const My_book = require("../schema/book.schema");
 const mongoose = require ("mongoose");
 
@@ -74,8 +73,35 @@ catch(error){
 }
 };
 
+
+const updateBook = async(req, res)=>{
+    const{id}=req.params;
+    const objectID = mongoose.Types.ObjectId.isvalid;
+    try{
+        if(objectID !== id || _id){
+            res.status(400).send("invalid id");
+        }
+const book = await My_book.findByIdAndUpdate(id, req.body,{
+    new: true})
+    if(!book){
+        return
+        res.status(404).send("book doesn't exist");
+    }
+    else{
+        res.status(200).send(book)
+    }
+        }
+        catch(err){
+            res.status(500).json({err: "internal server error"})
+        }
+    }
+
+
+
+
 module.exports ={
     GetAllBooks,
 PostAllBooks,
 GetSingleBook,
-DeleteBook};
+DeleteBook,
+updateBook};

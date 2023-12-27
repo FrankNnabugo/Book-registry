@@ -1,6 +1,6 @@
 const express = require("express");
-const { GetAllBooks, PostAllBooks, GetSingleBook, DeleteBook } = require("../controllers/book.controller");
-const router =express.Router();
+const { GetAllBooks, PostAllBooks, GetSingleBook, DeleteBook, updateBook} = require("../controllers/book.controller");
+const router =express.Router;
 
 
 
@@ -12,5 +12,6 @@ router.get("/:id", GetSingleBook);
 
 router.delete("/:id", DeleteBook);
 
+router.put("/:id", updateBook);
  
-module.exports = router;
+module.exports = {router};
