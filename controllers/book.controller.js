@@ -1,90 +1,89 @@
-const My_book = require("../schema/book.schema");
-const mongoose = require ("mongoose");
+const{Books}= require("../schema/book.schema");
 
-//GET all books
+
+
 const GetAllBooks = async(req , res) =>{
 
     try{
-    const allBooks = await My_book.find({}).sort({ CreatedAt: -1 });
+    const allBooks = await Books.find({}).sort({ CreatedAt: -1 });
     res.status(200).json(allBooks);
 }
 
-catch(error){
-    console.log("error in getAllBooks:", error);
+catch(err){
+    console.error("error getting all Books:", err);
 
-res.status(500).json({error: "internal server error"});
+res.status(500).json({msg: "internal server error"});
 }
 };
 
-//GET  a single book
+
+
 
 const GetSingleBook = async(req , res) =>{
-    const { id } = req.params;
-    console.log("received request for book with id:", id );
+    const {id:_id} = req.params;
 
 try{
 
-const GetBook = await My_book.findById(id);
-console.log("found book:" , GetBook);
+const getBook = await Books.findOne({id:_id});
+if(getBook)
+res.status(200).send(getBook)
+}
 
-if(!GetBook){
-   return
-    res.status(404).json({error: "Cannot find this book"});
-}
-res.status(200).json(GetBook);
-}
-catch(error){
-    console.log("error in GetSingleBook:" , error);
-    res.status(500).json({error: "internal server error"});
+catch(err){
+    console.error("error occured while getting:", err);
+    res.status(500).json({msg: "internal server error"});
 }
 };
 
-//create a new book
+
+
 const PostAllBooks = async(req , res) =>{
     const {title, author, description} = req.body;
 
     try{
 
-const Newbook = await My_book.create({title, author, description});
-    
-res.status(200).json(Newbook);
+const newBook = await Books.create({title, author, description});
+    await newBook.save();
+res.status(200).send(newBook);
 
     }
 
-catch(error){
-    res.status(400).json({error: "Bad request"});
+catch(err){
+    console.error("error creating book:", err)
+    res.status(500).json({msg: "internal server error"});
 }
 };
 
-//DELETE  a single book
+
 
 const DeleteBook = async(req , res)=>{
-    const { id } = req.params;
+    const {id} = req.params;
 try{
-const DeleteSinglebook = await My_book.findOneAndDelete({_id : id});
-return res.status(200).json({message:"book deleted successfully"});
+const deleteBook = await Books.findOneAndDelete({id:_id});
+res.status(200).json({msg:"book deleted:", deleteBook});
 }
 
-catch(error){
+catch(err){
 
-    console.log("error in delete book:" , error);
+    console.error("error deleting book:", err);
     
-    res.status(500).json({error: "internal server error"});
+    res.status(500).json({msg: "internal server error"});
 }
 };
 
 
 const updateBook = async(req, res)=>{
-    const{id}=req.params;
-    const objectID = mongoose.Types.ObjectId.isvalid;
-    try{
-        if(objectID !== id || _id){
+    const{id} = req.params;
+    const{title, author, description} = req.body;
+
+    try{ 
+        if(id !== _id){
             res.status(400).send("invalid id");
         }
-const book = await My_book.findByIdAndUpdate(id, req.body,{
-    new: true})
+
+const book = await Books.findByIdAndUpdate({id:_id}, req.body,{new: true});
+
     if(!book){
-        return
         res.status(404).send("book doesn't exist");
     }
     else{
@@ -92,7 +91,7 @@ const book = await My_book.findByIdAndUpdate(id, req.body,{
     }
         }
         catch(err){
-            res.status(500).json({err: "internal server error"})
+            res.status(500).json({msg: "internal server error:", err})
         }
     }
 

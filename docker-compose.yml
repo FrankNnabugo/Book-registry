@@ -1,0 +1,27 @@
+version: "1"
+
+services:
+
+mongoDB: 
+ image: mongo:latest
+ container_name: mongo_book_registry
+ ports:
+  - "5000:5000"
+ restart: always
+Environment: 
+ mongoDb_username: mongoDb_username
+ mongoDB_password: mongoDB_password
+ mongoDB_database: Books
+ volumes: 
+  - C:\Users\ACER\Documents:/data/db_d mongo
+
+App:
+ container_name: my_book_registry
+ ports:
+  - "4000:4000" 
+ depend_on: mongoDB
+ restart: always
+
+
+
+
